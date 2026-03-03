@@ -1,6 +1,15 @@
 /* ─── PERSICA 3 — Blog JS ─────────────────────────────────────────────────── */
 
-document.getElementById('year').textContent = new Date().getFullYear();
+// ── Sanity config ─────────────────────────────────────────────────────────────
+// Replace YOUR_PROJECT_ID with your actual Sanity project ID after setup
+const SANITY_PROJECT_ID  = 'mbgyqkdn';
+const SANITY_DATASET     = 'production';
+const SANITY_API_VERSION = '2024-01-01';
+
+function sanityQuery(groq) {
+  const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(groq)}`;
+  return fetch(url).then(r => r.json()).then(r => r.result);
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -19,7 +28,6 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// Auto-link URLs in plain text
 function autoLink(text) {
   const escaped = escapeHtml(text);
   return escaped.replace(
@@ -40,10 +48,12 @@ function getEmbedUrl(url) {
 
 async function loadSettings() {
   try {
-    const res      = await fetch('/api/settings');
-    const settings = await res.json();
+    const settings = await sanityQuery(
+      `*[_type == "siteSettings" && _id == "siteSettings"][0]{siteTitle,instagramUrl,bandcampUrl,spotifyUrl}`
+    );
 
-    // Site title
+    if (!settings) return;
+
     if (settings.siteTitle) {
       document.getElementById('site-title').textContent = settings.siteTitle;
       document.getElementById('footer-text').innerHTML =
@@ -51,7 +61,6 @@ async function loadSettings() {
       document.title = settings.siteTitle;
     }
 
-    // Social nav — only render links that have a URL set
     const nav   = document.getElementById('site-nav');
     const links = [
       { url: settings.instagramUrl, label: 'instagram' },
@@ -71,20 +80,19 @@ async function loadSettings() {
 // ── Render media block ────────────────────────────────────────────────────────
 
 function renderMedia(entry) {
-  const { mediaType, mediaUrl, mediaFile } = entry;
+  const {mediaType, imageUrl, videoUrl, videoFileUrl} = entry;
   if (!mediaType || mediaType === 'none') return '';
 
   if (mediaType === 'image') {
-    const src = mediaFile || mediaUrl;
-    if (!src) return '';
+    if (!imageUrl) return '';
     return `<div class="entry-media">
-      <img src="${escapeHtml(src)}" alt="${escapeHtml(entry.title || 'image')}" loading="lazy">
+      <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(entry.title || 'image')}" loading="lazy">
     </div>`;
   }
 
   if (mediaType === 'videolink') {
-    if (!mediaUrl) return '';
-    const embedUrl = getEmbedUrl(mediaUrl);
+    if (!videoUrl) return '';
+    const embedUrl = getEmbedUrl(videoUrl);
     if (embedUrl) {
       return `<div class="entry-media">
         <iframe src="${escapeHtml(embedUrl)}"
@@ -93,18 +101,17 @@ function renderMedia(entry) {
       </div>`;
     }
     return `<div class="entry-media">
-      <a href="${escapeHtml(mediaUrl)}" target="_blank" rel="noopener" class="video-external-link">
+      <a href="${escapeHtml(videoUrl)}" target="_blank" rel="noopener" class="video-external-link">
         watch video &rarr;
       </a>
     </div>`;
   }
 
   if (mediaType === 'mp4') {
-    const src = mediaFile || mediaUrl;
-    if (!src) return '';
+    if (!videoFileUrl) return '';
     return `<div class="entry-media">
       <video controls preload="metadata">
-        <source src="${escapeHtml(src)}" type="video/mp4">
+        <source src="${escapeHtml(videoFileUrl)}" type="video/mp4">
         Your browser does not support video.
       </video>
     </div>`;
@@ -123,7 +130,7 @@ function renderEntry(entry) {
 
   return `<article class="entry">
     <div class="entry-inner">
-      <span class="entry-date">${formatDate(entry.createdAt)}</span>
+      <span class="entry-date">${formatDate(entry._createdAt)}</span>
       ${title}${body}${media}${credits}
     </div>
   </article>`;
@@ -134,10 +141,11 @@ function renderEntry(entry) {
 async function loadEntries() {
   const container = document.getElementById('entries-container');
   try {
-    const res     = await fetch('/api/entries');
-    const entries = await res.json();
+    const entries = await sanityQuery(
+      `*[_type == "entry" && published != false] | order(orderRank asc){_id,_createdAt,title,body,credits,mediaType,"imageUrl":image.asset->url,videoUrl,"videoFileUrl":videoFile.asset->url}`
+    );
 
-    if (!entries.length) {
+    if (!entries || !entries.length) {
       container.innerHTML = '<p class="state-msg">no entries yet.</p>';
       return;
     }
