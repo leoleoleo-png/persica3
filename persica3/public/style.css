@@ -1,0 +1,272 @@
+/* ─── PERSICA 3 — BLOG STYLES ─────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:root {
+  --black: #111111;
+  --white: #ffffff;
+  --muted: #999999;
+  --faint: #dedede;
+  --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+    font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* ─── LINKS (classic) ─────────────────────────────────────────────────────── */
+
+a {
+  color: #0000ee;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #551a8b;
+}
+
+a:hover {
+  color: #0000cc;
+}
+
+/* ─── LAYOUT ──────────────────────────────────────────────────────────────── */
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ─── HEADER ──────────────────────────────────────────────────────────────── */
+
+header {
+  padding: 56px 0 0;
+  text-align: center;
+}
+
+.site-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+  display: block;
+  margin-bottom: 45px;
+}
+
+.site-nav {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 10px;
+    font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.site-nav a {
+  text-decoration: underline;
+}
+
+.header-rule {
+  margin-top: 20px;
+  border: none;
+  border-top: 1px solid var(--black);
+}
+
+/* ─── MAIN ────────────────────────────────────────────────────────────────── */
+
+main {
+  padding: 44px 0 52px;
+}
+
+/* ─── ENTRY ───────────────────────────────────────────────────────────────── */
+
+.entry {
+  margin-bottom: 0;
+}
+
+.entry-inner {
+  padding: 40px 0;
+}
+
+.entry-date {
+  display: block;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.entry-title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+
+.entry-body {
+  letter-spacing: 0.2px;
+  font-weight: 700;
+  line-height: 1.8;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* ─── MEDIA ───────────────────────────────────────────────────────────────── */
+
+.entry-media {
+  margin: 22px 0 0;
+}
+
+.entry-media img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--faint);
+}
+
+.entry-media video {
+  display: block;
+  width: 100%;
+  background: #000;
+}
+
+.entry-media iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+}
+
+.video-external-link {
+  color: #0000ee;
+  text-decoration: underline;
+}
+
+.video-external-link:visited {
+  color: #551a8b;
+}
+
+/* ─── CREDITS ─────────────────────────────────────────────────────────────── */
+
+.entry-credits {
+  margin-top: 14px;
+  color: var(--muted);
+  font-style: italic;
+
+}
+
+/* ─── SEPARATOR ───────────────────────────────────────────────────────────── */
+
+.entry-sep {
+  border: none;
+  border-top: 1px solid var(--faint);
+}
+
+/* ─── STATES ──────────────────────────────────────────────────────────────── */
+
+.state-msg {
+  text-align: center;
+  padding: 80px 0;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ─── FOOTER ──────────────────────────────────────────────────────────────── */
+
+footer {
+  padding-bottom: 56px;
+}
+
+.footer-rule {
+  border: none;
+  border-top: 0.5px solid var(--muted);
+  margin-bottom: 16px;
+}
+
+.footer-text {
+  letter-spacing: 0px;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 540px) {
+  .container {
+    padding: 0 18px;
+  }
+
+  header {
+    padding-top: 36px;
+  }
+
+  .site-title {
+    margin-bottom: 28px;
+  }
+
+  .site-nav {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  main {
+    padding: 28px 0 36px;
+  }
+
+  .entry-inner {
+    padding: 28px 0;
+  }
+
+  /* Videos keep 16/9 but font stays readable */
+  .entry-media iframe {
+    aspect-ratio: 16 / 9;
+  }
+
+  footer {
+    padding-bottom: 40px;
+  }
+}

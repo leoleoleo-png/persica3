@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PERSICA 3 — admin</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+  <!-- ── LOGIN ─────────────────────────────────────────────────────────────── -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">PERSICA 3</div>
+      <div class="login-sub">admin</div>
+      <form id="login-form" autocomplete="off">
+        <input
+          type="password"
+          id="pw-input"
+          placeholder="password"
+          autocomplete="current-password"
+          spellcheck="false"
+        >
+        <button type="submit">enter</button>
+      </form>
+      <p id="login-err" class="login-err"></p>
+    </div>
+  </div>
+
+  <!-- ── ADMIN PANEL ───────────────────────────────────────────────────────── -->
+  <div id="admin-panel" hidden>
+
+    <header class="top-bar">
+      <span class="top-bar-title">PERSICA&nbsp;3 <span class="dim">— admin</span></span>
+      <div class="top-bar-actions">
+        <a href="/" target="_blank" class="btn-ghost">view site &rarr;</a>
+        <button id="logout-btn" class="btn-ghost danger">logout</button>
+      </div>
+    </header>
+
+    <div class="layout">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <button id="new-btn" class="btn-new">+ new entry</button>
+        <div id="entry-list" class="entry-list">
+          <p class="list-msg">loading...</p>
+        </div>
+        <div class="sidebar-bottom">
+          <button id="settings-btn" class="btn-settings">settings</button>
+        </div>
+      </aside>
+
+      <!-- Editor -->
+      <main id="editor" class="editor">
+        <p class="editor-welcome">select an entry or create a new one.</p>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
