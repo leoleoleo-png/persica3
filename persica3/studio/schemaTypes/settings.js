@@ -33,5 +33,36 @@ export const siteSettings = defineType({
       title: 'Spotify URL',
       type: 'url',
     }),
+
+    defineField({
+      name: 'heroMediaType',
+      title: 'Hero Media Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'None', value: 'none' },
+          { title: 'Image', value: 'image' },
+          { title: 'Video (MP4)', value: 'mp4' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'none',
+    }),
+
+    defineField({
+      name: 'heroImage',
+      title: 'Hero Image',
+      type: 'image',
+      options: { hotspot: true },
+      hidden: ({ document }) => document?.heroMediaType !== 'image',
+    }),
+
+    defineField({
+      name: 'heroVideoFile',
+      title: 'Hero Video (MP4)',
+      type: 'file',
+      options: { accept: 'video/mp4,video/*' },
+      hidden: ({ document }) => document?.heroMediaType !== 'mp4',
+    }),
   ],
 })

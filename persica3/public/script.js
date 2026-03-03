@@ -49,7 +49,7 @@ function getEmbedUrl(url) {
 async function loadSettings() {
   try {
     const settings = await sanityQuery(
-      `*[_type == "siteSettings" && _id == "siteSettings"][0]{siteTitle,instagramUrl,bandcampUrl,spotifyUrl}`
+      `*[_type == "siteSettings" && _id == "siteSettings"][0]{siteTitle,instagramUrl,bandcampUrl,spotifyUrl,heroMediaType,"heroImageUrl":heroImage.asset->url,"heroVideoFileUrl":heroVideoFile.asset->url}`
     );
 
     if (!settings) return;
@@ -63,18 +63,45 @@ async function loadSettings() {
 
     const nav   = document.getElementById('site-nav');
     const links = [
-      { url: settings.instagramUrl, label: 'instagram' },
-      { url: settings.bandcampUrl,  label: 'bandcamp'  },
-      { url: settings.spotifyUrl,   label: 'spotify'   }
+      { url: settings.instagramUrl, label: 'Instagram' },
+      { url: settings.spotifyUrl,   label: 'Spotify'   },
+            { url: settings.bandcampUrl,  label: 'Bandcamp'  }
     ]
       .filter(l => l.url && l.url.trim())
       .map(l => `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${l.label}</a>`);
 
     nav.innerHTML = links.join('');
     nav.style.display = links.length ? 'flex' : 'none';
+    renderHero(settings);
   } catch (err) {
     console.error('Could not load settings', err);
   }
+}
+
+// ── Render hero section ───────────────────────────────────────────────────────
+
+function renderHero(settings) {
+  const section = document.getElementById('hero-section');
+  if (!section) return;
+
+  const { heroMediaType, heroImageUrl, heroVideoFileUrl } = settings;
+
+  if (!heroMediaType || heroMediaType === 'none') return;
+
+  let mediaHtml = '';
+
+  if (heroMediaType === 'image' && heroImageUrl) {
+    mediaHtml = `<img src="${escapeHtml(heroImageUrl)}" alt="" class="hero-media">`;
+  } else if (heroMediaType === 'mp4' && heroVideoFileUrl) {
+    mediaHtml = `<video class="hero-media" autoplay loop muted playsinline>
+      <source src="${escapeHtml(heroVideoFileUrl)}" type="video/mp4">
+    </video>`;
+  }
+
+  if (!mediaHtml) return;
+
+  section.innerHTML = mediaHtml + '<div class="hero-grain"></div>';
+  section.style.display = 'block';
 }
 
 // ── Render media block ────────────────────────────────────────────────────────
